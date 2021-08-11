@@ -14,6 +14,7 @@ pub struct Letter {
 }
 
 impl Word {
+	//picking one word from words.json file, and formatting it into Word struct
 	pub fn new() -> Word {
 		let mut raw_json_string = String::new();
 		{
@@ -33,9 +34,11 @@ impl Word {
 
 	pub fn display(&self) {
 		for letter in &self.letters {
+			//if user already guessed this letter > diplaying it, otherwise displaying a _
 			if letter.displayed { print!(" {} ", letter.character.to_uppercase()); }
 			else { print!(" _ "); }
 		}
+		//flushing after print!() so next println!() will be on next line
 		io::stdout().flush().unwrap();
 	}
 
@@ -44,12 +47,12 @@ impl Word {
 		for letter in &self.attempted_letters {
 			attempted = format!("{} {}", attempted, &letter.to_owned());
 		}
-		if self.attempted_letters.len() != 0 { println!("already tried: {}", attempted.to_uppercase()) }
+		if self.attempted_letters.len() != 0 { println!("\n(already tried: {})", attempted.to_uppercase()) }
 	}
 
 	pub fn guess(&mut self, attempts: &mut u8, game_state: &mut GameState) {
 		let mut input = String::new();
-		print!("\nGUESS THE LETTER => ");
+		print!("GUESS THE LETTER => ");
 		io::stdout().flush().unwrap();
 		io::stdin().read_line(&mut input).expect("failed to read user input");
 
@@ -61,7 +64,7 @@ impl Word {
 			if letter.character == guess[0] { letter.displayed = true; guessed = true; }
 			if letter.displayed { guessed_letters += 1; }
 		}
-
+		//if amount of guessed letters is equal to all letters in the word > user wins
 		if guessed_letters == self.letters.len() { *game_state = GameState::Won; return; }
 		if !guessed { *attempts -= 1; }
 

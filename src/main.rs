@@ -28,6 +28,7 @@ fn main() {
 			},
 
 			GameState::Won => {
+				//if user wins > displaying ascii image for 6 attempts
 				hangman.display(&6);
 				word.display();
 

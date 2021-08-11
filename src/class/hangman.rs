@@ -17,6 +17,7 @@ impl Hangman {
 	}
 
 	pub fn display(&self, attempts: &u8) {
+		//displaying ascii image depending on amount of attempts user have
 		println!("{}", self.figure[*attempts as usize]);
 	}
 }
