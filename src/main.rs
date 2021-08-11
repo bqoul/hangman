@@ -14,16 +14,19 @@ fn main() {
 				println!("! WELOME TO THE HANGMAN GAME !");
 				game_state = GameState::Going;
 			},
+
 			GameState::Going => {
 				hangman.display(&attempts);
 				word.display();
 
 				if attempts == 0 { game_state = GameState::Lost; continue; }
-				else if attempts == 1 { println!("\nLAST ATTEMPT!"); }
-				else { println!("\nYOU HAVE {} ATTEMPTS LEFT!", attempts); }
+				else if attempts == 1 { println!("\n\nLAST ATTEMPT!"); }
+				else { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); }
 
+				word.display_attempted();
 				word.guess(&mut attempts, &mut game_state);
 			},
+
 			GameState::Won => {
 				hangman.display(&6);
 				word.display();
@@ -31,6 +34,7 @@ fn main() {
 				println!("\n\nGOOD JOB! YOU SAVED THE HANGMAN");
 				break;
 			},
+
 			GameState::Lost => {
 				println!("\n\nYOU RAN OUT OF ATTEMPTS! HANGMAN IS NOW DEAD");
 				break;

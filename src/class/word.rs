@@ -4,7 +4,8 @@ use std::io::{self, Write};
 use super::game_state::GameState;
 
 pub struct Word {
-	letters: Vec<Letter>
+	letters: Vec<Letter>,
+	attempted_letters: Vec<char>,
 }
 
 pub struct Letter {
@@ -21,7 +22,7 @@ impl Word {
 		}
 		let all_words: Vec<String> = serde_json::from_str(&raw_json_string).expect("cannot deserialize raw_json_string");
 
-		let mut word = Word {letters: Vec::new()};
+		let mut word = Word {letters: Vec::new(), attempted_letters: Vec::new()};
 		let mut rng = rand::thread_rng();
 		for character in  all_words[rng.gen_range(0..all_words.len()) as usize].clone().chars() {
 			word.letters.push(Letter { character, displayed: false });
@@ -38,21 +39,32 @@ impl Word {
 		io::stdout().flush().unwrap();
 	}
 
+	pub fn display_attempted(&self) {
+		let mut attempted = String::new();
+		for letter in &self.attempted_letters {
+			attempted = format!("{} {}", attempted, &letter.to_owned());
+		}
+		if self.attempted_letters.len() != 0 { println!("already tried: {}", attempted.to_uppercase()) }
+	}
+
 	pub fn guess(&mut self, attempts: &mut u8, game_state: &mut GameState) {
 		let mut input = String::new();
-		print!("GUESS THE LETTER => ");
+		print!("\nGUESS THE LETTER => ");
 		io::stdout().flush().unwrap();
 		io::stdin().read_line(&mut input).expect("failed to read user input");
 
-		let guess: Vec<char> = input.chars().collect();
 		let mut guessed = false;
 		let mut guessed_letters = 0;
+
+		let guess: Vec<char> = input.chars().collect();
 		for letter in &mut self.letters {
 			if letter.character == guess[0] { letter.displayed = true; guessed = true; }
 			if letter.displayed { guessed_letters += 1; }
 		}
 
-		if	guessed_letters == self.letters.len() { *game_state = GameState::Won; return; }
+		if guessed_letters == self.letters.len() { *game_state = GameState::Won; return; }
 		if !guessed { *attempts -= 1; }
+
+		self.attempted_letters.push(guess[0])
 	}
 }
