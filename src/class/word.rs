@@ -5,7 +5,7 @@ use super::game_state::GameState;
 
 pub struct Word {
 	letters: Vec<Letter>,
-	attempted_letters: Vec<char>,
+	failed_attempts: Vec<char>,
 }
 
 pub struct Letter {
@@ -23,7 +23,7 @@ impl Word {
 		}
 		let all_words: Vec<String> = serde_json::from_str(&raw_json_string).expect("cannot deserialize raw_json_string");
 
-		let mut word = Word {letters: Vec::new(), attempted_letters: Vec::new()};
+		let mut word = Word {letters: Vec::new(), failed_attempts: Vec::new()};
 		let mut rng = rand::thread_rng();
 		for character in  all_words[rng.gen_range(0..all_words.len()) as usize].clone().chars() {
 			word.letters.push(Letter { character, displayed: false });
@@ -44,10 +44,10 @@ impl Word {
 
 	pub fn display_attempted(&self) {
 		let mut attempted = String::new();
-		for letter in &self.attempted_letters {
+		for letter in &self.failed_attempts {
 			attempted = format!("{} {}", attempted, &letter.to_owned());
 		}
-		if self.attempted_letters.len() != 0 { println!("\n(already tried: {})", attempted.to_uppercase()) }
+		if self.failed_attempts.len() != 0 { println!("\n(already tried: {})", attempted.to_uppercase()) }
 	}
 
 	pub fn guess(&mut self, attempts: &mut u8, game_state: &mut GameState) {
@@ -66,8 +66,7 @@ impl Word {
 		}
 		//if amount of guessed letters is equal to all letters in the word > user wins
 		if guessed_letters == self.letters.len() { *game_state = GameState::Won; return; }
-		if !guessed { *attempts -= 1; }
-
-		self.attempted_letters.push(guess[0])
+		if self.failed_attempts.contains(&guess[0]) { return; }
+		if !guessed { *attempts -= 1; self.failed_attempts.push(guess[0]); }
 	}
 }
