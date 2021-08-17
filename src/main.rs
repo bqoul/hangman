@@ -25,6 +25,8 @@ fn main() {
 
 				word.display_attempted();
 				word.guess(&mut attempts, &mut game_state);
+
+				print!("\x1B[2J\x1B[1;1H"); // clearing the screen and putting cursor in the first row
 			},
 
 			GameState::Won => {
