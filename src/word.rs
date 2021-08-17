@@ -1,7 +1,7 @@
 use std::{fs::File, io::Read};
 use rand::Rng;
 use std::io::{self, Write};
-use super::game_state::GameState;
+use super::GameState;
 
 pub struct Word {
 	letters: Vec<Letter>,
@@ -59,7 +59,9 @@ impl Word {
 		let mut guessed = false;
 		let mut guessed_letters = 0;
 
-		let guess: Vec<char> = input.chars().collect();
+		let guess: Vec<char> = input.trim().chars().collect();
+		if guess.len() == 0 { return; }
+
 		for letter in &mut self.letters {
 			if letter.character == guess[0] { letter.displayed = true; guessed = true; }
 			if letter.displayed { guessed_letters += 1; }

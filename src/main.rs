@@ -1,16 +1,23 @@
-mod class;
-use class::{hangman::Hangman, word::Word, game_state::GameState};
+mod hangman;
+mod word;
+
+use {hangman::Hangman, word::Word};
+
+pub enum GameState {
+	Started,
+	Going,
+	Won,
+	Lost,
+}
 
 fn main() {
+	print!("{}c", 27 as char); //clearing terminal window
 
 	let mut game_state = GameState::Started;
-
 	let mut attempts: u8 = 6;
-	let hangman = Hangman::new();
 	let mut word = Word::new();
+	let hangman = Hangman::new();
 
-	// clearing the screen and putting cursor in the first row
-	print!("{}c", 27 as char);
 	loop {
 		match game_state {
 			GameState::Started => {
@@ -22,18 +29,19 @@ fn main() {
 				hangman.display(&attempts);
 				word.display();
 
-				if attempts == 0 { game_state = GameState::Lost; continue; }
-				else if attempts == 1 { println!("\n\nLAST ATTEMPT!"); }
-				else { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); }
+				match attempts {
+					0 => { game_state = GameState::Lost; continue; }
+					1 => { println!("\n\nLAST ATTEMPT!"); }
+					_ => { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); } 
+				}
 
 				word.display_attempted();
 				word.guess(&mut attempts, &mut game_state);
-
-				print!("{}c", 27 as char);
+				print!("{}c", 27 as char); //clearing terminal window
 			},
 
 			GameState::Won => {
-				//if user wins > displaying ascii image for 6 attempts
+				//displaying ascii image for 6 attempts
 				hangman.display(&6);
 				word.display();
 
