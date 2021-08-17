@@ -2,12 +2,15 @@ mod class;
 use class::{hangman::Hangman, word::Word, game_state::GameState};
 
 fn main() {
+
 	let mut game_state = GameState::Started;
 
 	let mut attempts: u8 = 6;
 	let hangman = Hangman::new();
 	let mut word = Word::new();
 
+	// clearing the screen and putting cursor in the first row
+	print!("{}c", 27 as char);
 	loop {
 		match game_state {
 			GameState::Started => {
@@ -26,7 +29,7 @@ fn main() {
 				word.display_attempted();
 				word.guess(&mut attempts, &mut game_state);
 
-				print!("\x1B[2J\x1B[1;1H"); // clearing the screen and putting cursor in the first row
+				print!("{}c", 27 as char);
 			},
 
 			GameState::Won => {
