@@ -1,6 +1,5 @@
-use std::{fs::File, io::Read};
+use std::{fs::File, io::{Read, self, Write}};
 use rand::Rng;
-use std::io::{self, Write};
 use super::GameState;
 
 pub struct Word {

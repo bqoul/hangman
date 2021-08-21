@@ -32,7 +32,7 @@ fn main() {
 				match attempts {
 					0 => { game_state = GameState::Lost; continue; }
 					1 => { println!("\n\nLAST ATTEMPT!"); }
-					_ => { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); } 
+					_ => { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); }
 				}
 
 				word.display_attempted();
