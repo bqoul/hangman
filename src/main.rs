@@ -4,7 +4,6 @@ mod word;
 use {hangman::Hangman, word::Word};
 
 pub enum GameState {
-	Started,
 	Going,
 	Won,
 	Lost,
@@ -12,19 +11,15 @@ pub enum GameState {
 
 fn main() {
 	print!("{}c", 27 as char); //clearing terminal window
+	println!("! WELOME TO THE HANGMAN GAME !");
 
-	let mut game_state = GameState::Started;
+	let mut game_state = GameState::Going;
 	let mut attempts: u8 = 6;
 	let mut word = Word::new();
 	let hangman = Hangman::new();
 
 	loop {
 		match game_state {
-			GameState::Started => {
-				println!("! WELOME TO THE HANGMAN GAME !");
-				game_state = GameState::Going;
-			},
-
 			GameState::Going => {
 				hangman.display(&attempts);
 				word.display();
@@ -32,7 +27,7 @@ fn main() {
 				match attempts {
 					0 => { game_state = GameState::Lost; continue; }
 					1 => { println!("\n\nLAST ATTEMPT!"); }
-					_ => { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); }
+					_ => { println!("\n\nYOU HAVE {} ATTEMPTS LEFT!", attempts); } 
 				}
 
 				word.display_attempted();
